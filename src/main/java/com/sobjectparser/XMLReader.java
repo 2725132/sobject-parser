@@ -7,6 +7,10 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -32,10 +36,19 @@ public class XMLReader {
 	}
 
 	public List<String> getSobjectFields(Document document) {
-		NodeList nodes = document.getElementsByTagName("note");
 		List<String> fieldNames = new ArrayList<String>();
-		for (int i = 0; i < nodes.getLength(); i++)
-			fieldNames.add(nodes.item(i).getTextContent());
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		try {
+			String expression = "//fields/fullName";
+			NodeList nodes;
+			nodes = (NodeList) xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++)
+				fieldNames.add(nodes.item(i).getTextContent());
+
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+
 		return fieldNames;
 	}
 

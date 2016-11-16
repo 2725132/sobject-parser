@@ -5,12 +5,11 @@ import java.util.List;
 import com.sobjectparser.directory.DirectoryReader;
 import com.sobjectparser.report.PDFReport;
 
-import lombok.Data;
-@Data
+
 public class BaseController {
 	
-	private static String SRCFOLDER = "C:/Users/Felipe/Documents/Objects/Input/";
-	private static String DESTFOLDER = "C:/Users/Felipe/Documents/Objects/Output/";
+	public static String SRCFOLDER = "C:/Users/fgcarva/Documents/sObject Project/sobject-parser-git/Input/";
+	public static String DESTFOLDER = "C:/Users/fgcarva/Documents/sObject Project/sobject-parser-git/Output/";
 	
 	PDFReport pdfReport;
 	DirectoryReader directoryReader;

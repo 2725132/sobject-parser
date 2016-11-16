@@ -10,7 +10,7 @@ public class XMLReaderTest {
 	@Test
 	public void getDocumentFromXMLTest() {
 		XMLReader reader = new XMLReader();
-		Document doc = reader.getDocumentFromXML("C:/Users/Felipe/Documents/Objects/Input/account.xml");
+		Document doc = reader.getDocumentFromXML(BaseController.SRCFOLDER);
 		Assert.assertNotNull(doc);
 
 	}
@@ -18,7 +18,7 @@ public class XMLReaderTest {
 	@Test
 	public void parseTest() {
 		XMLReader reader = new XMLReader();
-		List<String> result = reader.parse("C:/Users/Felipe/Documents/Objects/Input/account.xml");
+		List<String> result = reader.parse(BaseController.SRCFOLDER);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(8, result.size());
 	}
