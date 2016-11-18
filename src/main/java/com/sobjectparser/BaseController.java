@@ -1,38 +1,39 @@
 package com.sobjectparser;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sobjectparser.directory.DirectoryReader;
 import com.sobjectparser.report.PDFReport;
+import com.sobjectparser.xml.XMLReader;
 
 
 public class BaseController {
 	
-	public static String SRCFOLDER = "C:/Users/fgcarva/Documents/sObject Project/sobject-parser-git/Input/";
-	public static String DESTFOLDER = "C:/Users/fgcarva/Documents/sObject Project/sobject-parser-git/Output/";
+	public static String SRCFOLDER = "Input/";
+	public static String DESTFOLDER = "Output/";
 	
 	PDFReport pdfReport;
 	DirectoryReader directoryReader;
-	
+	XMLReader xmlReader;
 	public BaseController(){
 		pdfReport = new PDFReport();
 		directoryReader = new DirectoryReader();
+		xmlReader = new XMLReader();
 	}
 	
-	public void resolve(){
+	public void resolveForPDF(){
 		List<String> filenames = directoryReader.read(SRCFOLDER);
-		for(String file : filenames){
-			System.out.println(file);
+		for(String fileName : filenames){
+			System.out.println(fileName);
 			
-			//Invert slashes
-			file = file.replace("\\", "/");
-			
-			PDFReport.MakeFieldsPDF(file, DESTFOLDER);
+			Map<String, List<String>> fieldsMapping = xmlReader.read(fileName);
+			PDFReport.MakeFieldsPDF(fileName, fieldsMapping);
 		}
 		
 	}
 	public static void main(String[] args) {
 		BaseController controller = new BaseController();
-		controller.resolve();
+		controller.resolveForPDF();
 	}
 }

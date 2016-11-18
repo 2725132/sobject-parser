@@ -1,9 +1,12 @@
-package com.sobjectparser;
+package com.sobjectparser.xml;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,7 +20,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XMLReader {
-
+	String expression = "//fields/fullName";
 	public Document getDocumentFromXML(String XMLName) {
 		FileInputStream xml;
 		Document document = null;
@@ -35,24 +38,30 @@ public class XMLReader {
 
 	}
 
-	public List<String> getSobjectFields(Document document) {
-		List<String> fieldNames = new ArrayList<String>();
-		XPath xpath = XPathFactory.newInstance().newXPath();
+	public Map<String, List<String>> getSobjectFields(Document document) {
+		Map<String, List<String>> fieldsMapping = new HashMap<String, List<String>>();
+		
+		fieldsMapping.put("fullName", getResultFromDocument(document));
+		return fieldsMapping;
+	}
+	
+	public List<String> getResultFromDocument(Document document){
+		List<String> content = new ArrayList<String>();
 		try {
-			String expression = "//fields/fullName";
-			NodeList nodes;
-			nodes = (NodeList) xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); i++)
-				fieldNames.add(nodes.item(i).getTextContent());
-
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		
+		NodeList nodes;
+		nodes = (NodeList) xpath.compile(expression).evaluate(document, XPathConstants.NODESET);
+		for (int i = 0; i < nodes.getLength(); i++)	content.add(nodes.item(i).getTextContent());
+		
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-
-		return fieldNames;
+		
+		return content;
 	}
 
-	public List<String> parse(String filename) {
+	public Map<String, List<String>> read(String filename) {
 		Document document = getDocumentFromXML(filename);
 		return getSobjectFields(document);
 	}

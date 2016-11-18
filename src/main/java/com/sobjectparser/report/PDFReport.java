@@ -3,13 +3,15 @@ package com.sobjectparser.report;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.sobjectparser.XMLReader;
+import com.sobjectparser.BaseController;
+import com.sobjectparser.xml.XMLReader;
 
 public class PDFReport {
 	FormattingPDF format;
@@ -18,29 +20,28 @@ public class PDFReport {
 		format = new FormattingPDF();
 	}
 
-	public static String adjustFileName(String fileName, String destiny){
+	public static String adjustFileName(String fileName, String destiny) {
 		FileNameBuilder builder = new FileNameBuilder();
 		fileName = builder.changeExtension(fileName, "pdf");
 		fileName = builder.changePath(destiny, fileName);
 		return fileName;
 	}
-	
-	public static void MakeFieldsPDF(String fileName, String destiny) {
-		XMLReader xml = new XMLReader();
-		List<String> fieldNames = xml.parse(fileName);
-		fileName = adjustFileName(fileName, destiny);
+
+	public static void MakeFieldsPDF(String fileName, Map<String, List<String>> fieldsMapping) {
+
+		fileName = adjustFileName(fileName, BaseController.DESTFOLDER);
 		Document document = new Document();
-		try {			
+		try {
 			PdfWriter.getInstance(document, new FileOutputStream(fileName));
 			document.open();
 			document.setMargins(36, 72, 108, 108);
-			SetTitle(fileName.substring(fileName.lastIndexOf("/"), fileName.lastIndexOf(".") ), document);
+			SetTitle(fileName.substring(fileName.lastIndexOf("/"), fileName.lastIndexOf(".")), document);
 
-			for (String field : fieldNames) document.add(new Paragraph(field, FormattingPDF.paragraphFormat));
-			
-			
+			for (String field : fieldsMapping.get("fullName"))
+				document.add(new Paragraph(field, FormattingPDF.paragraphFormat));
+
 		} catch (FileNotFoundException | DocumentException e) {
-				e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 			document.close();
 		}
@@ -52,8 +53,5 @@ public class PDFReport {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, DocumentException {
-		MakeFieldsPDF("C:/Users/Felipe/Documents/Objects/Input/account.xml", "C:/Users/Felipe/Documents/Objects/Output/");
-		MakeFieldsPDF("C:/Users/Felipe/Documents/Objects/Input/contact.xml", "C:/Users/Felipe/Documents/Objects/Output/");
-		MakeFieldsPDF("C:/Users/Felipe/Documents/Objects/Input/PO.xml", "C:/Users/Felipe/Documents/Objects/Output/");
 	}
 }

@@ -1,10 +1,13 @@
 package com.sobjectparser;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
+
+import com.sobjectparser.xml.XMLReader;
 
 public class XMLReaderTest {
 	@Test
@@ -18,8 +21,8 @@ public class XMLReaderTest {
 	@Test
 	public void parseTest() {
 		XMLReader reader = new XMLReader();
-		List<String> result = reader.parse(BaseController.SRCFOLDER);
+		Map<String, List<String>> result = reader.read(BaseController.SRCFOLDER);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(8, result.size());
+		Assert.assertEquals(1, result.size());
 	}
 }
