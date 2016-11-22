@@ -4,8 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.sobjectparser.BaseController;
 
+@Component
 public class DirectoryReader {
 
 	public List<String> read(String folderPath) {

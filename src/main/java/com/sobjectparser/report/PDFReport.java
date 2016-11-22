@@ -2,8 +2,11 @@ package com.sobjectparser.report;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -13,6 +16,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.sobjectparser.BaseController;
 import com.sobjectparser.xml.XMLReader;
 
+@Component
 public class PDFReport {
 	FormattingPDF format;
 
@@ -36,9 +40,8 @@ public class PDFReport {
 			document.open();
 			document.setMargins(36, 72, 108, 108);
 			SetTitle(fileName.substring(fileName.lastIndexOf("/"), fileName.lastIndexOf(".")), document);
+			setAttributes(document, fieldsMapping);
 
-			for (String field : fieldsMapping.get("fullName"))
-				document.add(new Paragraph(field, FormattingPDF.paragraphFormat));
 
 		} catch (FileNotFoundException | DocumentException e) {
 			e.printStackTrace();
@@ -47,6 +50,14 @@ public class PDFReport {
 		}
 	}
 
+	public static Document setAttributes(Document document, Map<String, List<String>> fieldsMapping) throws DocumentException{
+		Iterator<String> fullNames = fieldsMapping.get("fullName").iterator();
+		Iterator<String> type = fieldsMapping.get("type").iterator();
+		while (fullNames.hasNext() && type.hasNext()) document.add(new Paragraph("Name: " + fullNames.next() + "          Type: " + type.next()));
+		return document;
+		
+	}
+	
 	public static void SetTitle(String text, Document doc) throws DocumentException {
 		Paragraph title = new Paragraph(text, FormattingPDF.titleFormat);
 		doc.add(title);

@@ -1,6 +1,8 @@
 /build
 .springBeans
 .classpath
+.springBeans
 .project
 .settings
 /target
+/.metadata

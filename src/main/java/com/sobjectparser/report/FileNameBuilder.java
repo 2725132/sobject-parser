@@ -1,5 +1,8 @@
 package com.sobjectparser.report;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FileNameBuilder {
 	public String changeExtension(String fileName, String extension) {
 		fileName = fileName.substring(0, fileName.lastIndexOf('.'));

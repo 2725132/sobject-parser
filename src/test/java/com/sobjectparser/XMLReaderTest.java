@@ -1,5 +1,6 @@
 package com.sobjectparser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,8 @@ public class XMLReaderTest {
 	@Test
 	public void parseTest() {
 		XMLReader reader = new XMLReader();
-		Map<String, List<String>> result = reader.read(BaseController.SRCFOLDER);
+		List<String> fields = new ArrayList<String>();
+		Map<String, List<String>> result = reader.read(BaseController.SRCFOLDER, fields );
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 	}

@@ -15,12 +15,14 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+@Component
 public class XMLReader {
-	String expression = "//fields/fullName";
+	
 	public Document getDocumentFromXML(String XMLName) {
 		FileInputStream xml;
 		Document document = null;
@@ -38,14 +40,18 @@ public class XMLReader {
 
 	}
 
-	public Map<String, List<String>> getSobjectFields(Document document) {
+	private Map<String, List<String>> getSobjectFields(Document document, List<String> expressions) {
 		Map<String, List<String>> fieldsMapping = new HashMap<String, List<String>>();
-		
-		fieldsMapping.put("fullName", getResultFromDocument(document));
+	
+		for(String expression : expressions)  {
+			//Last field of expression to use as a key, if the expression is //object//field, so it will catch field
+			String name = expression.substring(expression.lastIndexOf('/') + 1);
+			fieldsMapping.put(name, getResultFromDocument(document, expression));	
+		}
 		return fieldsMapping;
 	}
 	
-	public List<String> getResultFromDocument(Document document){
+	private List<String> getResultFromDocument(Document document, String expression){
 		List<String> content = new ArrayList<String>();
 		try {
 		XPath xpath = XPathFactory.newInstance().newXPath();
@@ -61,9 +67,9 @@ public class XMLReader {
 		return content;
 	}
 
-	public Map<String, List<String>> read(String filename) {
+	public Map<String, List<String>> read(String filename, List<String> expressions) {
 		Document document = getDocumentFromXML(filename);
-		return getSobjectFields(document);
+		return getSobjectFields(document, expressions);
 	}
 
 }
