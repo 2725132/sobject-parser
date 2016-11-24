@@ -59,7 +59,7 @@ public class DataloaderBeanBuilder {
 			docBuilder = docFactory.newDocumentBuilder();
 			doc = docBuilder.newDocument();
 
-			Element beans = doc.createElement("beans");
+			beans = doc.createElement("beans");
 			doc.appendChild(beans);
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -107,7 +107,7 @@ public class DataloaderBeanBuilder {
 
 		Element sfdcExtractionSOQL = doc.createElement("entry");
 		sfdcExtractionSOQL.setAttribute("key", "sfdc.extractionSOQL");
-		sfdcExtractionSOQL.setAttribute("value", "select Id from " + fileName);
+		sfdcExtractionSOQL.setAttribute("value", QueryBuilder.buildQuery(fileNameBuilder.getFileNameWithExtension(fileName, ""), sourceXML));
 		map.appendChild(sfdcExtractionSOQL);
 
 		Element processOperation = doc.createElement("entry");
@@ -135,7 +135,7 @@ public class DataloaderBeanBuilder {
 			Transformer transformer;
 			transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("C:/process-conf.xml"));
+			StreamResult result = new StreamResult(new File(BaseController.DESTFOLDER + "process-conf.xml"));
 			transformer.transform(source, result);
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block

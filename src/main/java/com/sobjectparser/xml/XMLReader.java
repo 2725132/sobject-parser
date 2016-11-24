@@ -44,7 +44,7 @@ public class XMLReader {
 		Map<String, List<String>> fieldsMapping = new HashMap<String, List<String>>();
 	
 		for(String expression : expressions)  {
-			//Last field of expression to use as a key, if the expression is //object//field, so it will catch field
+			//Last field of expression to use as a key, if the expression is //object//field, so it will catch any field
 			String name = expression.substring(expression.lastIndexOf('/') + 1);
 			fieldsMapping.put(name, getResultFromDocument(document, expression));	
 		}

@@ -18,6 +18,7 @@ import com.sobjectparser.xml.XMLReader;
 @Controller
 public class BaseController {
 	
+
 	public static String SRCFOLDER = "Input/";
 	public static String DESTFOLDER = "Output/";
 	
