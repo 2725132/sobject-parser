@@ -13,7 +13,9 @@ public class DirectoryReader {
 
 	public List<String> read(String folderPath) {
 		List<String> names = new ArrayList<String>();
+		System.out.println("Reading input directory.....");
 		File[] files = new File(folderPath).listFiles();
+		
 		for (File file : files) {
 			String filePath = file.getAbsolutePath();
 			filePath = filePath.replace("\\", "/");

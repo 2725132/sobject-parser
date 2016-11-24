@@ -61,12 +61,14 @@ public class BaseController {
 			Map<String, List<String>> fieldsMapping = xmlReader.read(fileName, expressions);
 			beanBuilder.buildDocument(fileName, fieldsMapping);
 		}
-		
+		beanBuilder.gustavo();
 	}
 	public static void main(String[] args) {
 		ApplicationContext context = 
 	             new ClassPathXmlApplicationContext("context.xml");
 		BaseController controller = (BaseController) context.getBean(BaseController.class);
+		
+		
 		//controller.resolveForPDF();
 		controller.resolveForDataloader();
 	}

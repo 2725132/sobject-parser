@@ -1,13 +1,18 @@
 package com.sobjectparser.xml;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -15,47 +20,126 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import com.sobjectparser.BaseController;
 import com.sobjectparser.directory.DirectoryReader;
 import com.sobjectparser.report.FileNameBuilder;
 
+import lombok.Data;
+
+@Data
 @Component
 public class DataloaderBeanBuilder {
+
+	private final static String SUCCESS_FOLDER = "C:\\Users\\fgcarva\\Desktop\\Felipe\\dataloader-config\\success\\";
+	private final static String ERROR_FOLDER = "C:\\Users\\fgcarva\\Desktop\\Felipe\\dataloader-config\\error\\";
+
 	@Autowired
 	private DirectoryReader directoryReader;
 	private XMLReader xmlReader;
 	private List<String> expressions;
-	
+
+	private Document doc;
+	private Element beans;
+	private DocumentBuilder docBuilder;
+
 	@Autowired
 	private FileNameBuilder fileNameBuilder;
-	
-	public void buildBean(Map<String, List<String>> fieldsMapping) throws ParserConfigurationException, TransformerException {
-		List<String> fileNames = directoryReader.read(BaseController.SRCFOLDER);
-		for (String fileName : fileNames) {
-			xmlReader.read(fileName, expressions);
-		}
-	}
 
-	public void buildDocument(String fileName, Map<String, List<String>> sourceXML) {
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = null;
+	@PostConstruct
+	public void init() {
+
 		try {
+			System.out.println("Initializing..");
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			docBuilder = docFactory.newDocumentBuilder();
-			Document doc = docBuilder.newDocument();
-			System.out.println("Making xml.....");
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			fileNameBuilder.changeExtension(fileName, "xml");
-			fileNameBuilder.changePath(BaseController.DESTFOLDER, fileName);
-			StreamResult result = new StreamResult(new File(fileName));
-			transformer.transform(source, result);
-		} catch (ParserConfigurationException | TransformerException e) {
+			doc = docBuilder.newDocument();
+
+			Element beans = doc.createElement("beans");
+			doc.appendChild(beans);
+		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		docBuilder.newDocument();
 
+	}
+
+	public void composeXML(String fileName, Map<String, List<String>> sourceXML) {
+		Element bean = doc.createElement("bean");
+
+		bean.setAttribute("id", fileName);
+		bean.setAttribute("class", "com.salesforce.dataloader.process.ProcessRunner");
+		bean.setAttribute("singleton", "false");
+
+		Element description = doc.createElement("description");
+		bean.appendChild(description);
+
+		Element name = doc.createElement("property");
+		name.setAttribute("name", "name");
+		name.setAttribute("value", "csv" + fileName);
+		bean.appendChild(name);
+
+		Element configOverrideMap = doc.createElement("property");
+		configOverrideMap.setAttribute("name", "configOverrideMapw");
+		Element map = doc.createElement("map");
+		configOverrideMap.appendChild(map);
+
+		Element processOutputError = doc.createElement("entry");
+		processOutputError.setAttribute("key", "process.outputError");
+		processOutputError.setAttribute("value",
+				ERROR_FOLDER + fileNameBuilder.getFileNameWithExtension(fileName, "csv"));
+		map.appendChild(processOutputError);
+
+		Element dataAccessName = doc.createElement("entry");
+		dataAccessName.setAttribute("key", "dataAccess.name");
+		dataAccessName.setAttribute("value",
+				SUCCESS_FOLDER + fileNameBuilder.getFileNameWithExtension(fileName, "csv"));
+		map.appendChild(dataAccessName);
+
+		Element sfdcEntity = doc.createElement("entry");
+		sfdcEntity.setAttribute("key", "sfdc.entity");
+		sfdcEntity.setAttribute("value", fileName);
+		map.appendChild(sfdcEntity);
+
+		Element sfdcExtractionSOQL = doc.createElement("entry");
+		sfdcExtractionSOQL.setAttribute("key", "sfdc.extractionSOQL");
+		sfdcExtractionSOQL.setAttribute("value", "select Id from " + fileName);
+		map.appendChild(sfdcExtractionSOQL);
+
+		Element processOperation = doc.createElement("entry");
+		processOperation.setAttribute("key", "process.operation");
+		processOperation.setAttribute("value", "extract");
+		map.appendChild(processOperation);
+
+		bean.appendChild(configOverrideMap);
+		
+		beans.appendChild(bean);
+
+	}
+
+	public void buildDocument(String fileName, Map<String, List<String>> sourceXML) {
+			System.out.println("Making xml.....");
+			fileName = fileNameBuilder.changeExtension(fileName, "xml");
+			fileName = fileNameBuilder.changePath(BaseController.DESTFOLDER, fileName);
+			composeXML(fileNameBuilder.getFileNameWithExtension(fileName, ""), sourceXML);
+	}
+	
+	
+	public void gustavo(){
+		try {
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer;
+			transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File("C:/process-conf.xml"));
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

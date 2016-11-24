@@ -5,8 +5,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileNameBuilder {
 	public String changeExtension(String fileName, String extension) {
-		fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-		String changeFileName = fileName + "." + extension;
+		String changeFileName;
+		if(fileName == null || extension == null ) changeFileName = "";
+		if(fileName.contains("."))fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+		if(extension != "") changeFileName = fileName + "." + extension;
+		else changeFileName = fileName;
+		
 		return changeFileName;
 	}
 
@@ -16,5 +20,8 @@ public class FileNameBuilder {
 		return fileName;
 	}
 	
+	public String getFileNameWithExtension(String fileName, String extension){
+		return changePath("", changeExtension(fileName, extension));
+	}
 
 }
