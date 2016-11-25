@@ -3,7 +3,6 @@ package com.sobjectparser;
 import java.util.List;
 import java.util.Map;
 
-import org.omg.CORBA.portable.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;

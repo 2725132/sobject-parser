@@ -1,4 +1,4 @@
-package com.sobjectparser;
+package com.sobjectparser.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.sobjectparser.BaseController;
 import com.sobjectparser.xml.XMLReader;
 
 public class XMLReaderTest {

@@ -1,18 +1,13 @@
 package com.sobjectparser.xml;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -20,11 +15,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import com.sobjectparser.BaseController;
 import com.sobjectparser.directory.DirectoryReader;
 import com.sobjectparser.report.FileNameBuilder;
@@ -84,7 +76,7 @@ public class DataloaderBeanBuilder {
 		bean.appendChild(name);
 
 		Element configOverrideMap = doc.createElement("property");
-		configOverrideMap.setAttribute("name", "configOverrideMapw");
+		configOverrideMap.setAttribute("name", "configOverrideMap");
 		Element map = doc.createElement("map");
 		configOverrideMap.appendChild(map);
 
